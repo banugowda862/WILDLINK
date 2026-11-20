@@ -29,6 +29,11 @@ import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 import { TermsPage } from './pages/TermsPage';
 import { UserDashboardPage } from './pages/UserDashboardPage';
 
+// Real-Time Computer Vision & Safety Modes
+import { LiveCameraPage } from './pages/LiveCameraPage';
+import { JourneySafetyPage } from './pages/JourneySafetyPage';
+import { VillageSafetyPage } from './pages/VillageSafetyPage';
+
 export function App() {
   return (
     <AuthProvider>
@@ -39,7 +44,7 @@ export function App() {
             <Navbar />
             <main className="flex-1">
               <Routes>
-                {/* Public Pages */}
+                {/* Public Core Pages */}
                 <Route path="/" element={<Home />} />
                 <Route path="/map" element={<SafetyMapPage />} />
                 <Route path="/crop-protection" element={<CropProtectionPage />} />
@@ -57,6 +62,11 @@ export function App() {
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/privacy" element={<PrivacyPolicyPage />} />
                 <Route path="/terms" element={<TermsPage />} />
+
+                {/* Real-Time Vision & Evaluation Modes */}
+                <Route path="/live-camera" element={<LiveCameraPage />} />
+                <Route path="/journey-safety" element={<JourneySafetyPage />} />
+                <Route path="/village-safety" element={<VillageSafetyPage />} />
 
                 {/* Reporting & User Dashboards */}
                 <Route path="/report" element={<ReportSubmissionPage />} />

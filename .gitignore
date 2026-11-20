@@ -33,3 +33,5 @@ Thumbs.db
 # Temp files
 *.log
 master_prompt.txt
+
+backend/yolo_config/

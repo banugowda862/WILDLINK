@@ -136,6 +136,14 @@ class RescueCaseCreate(BaseModel):
     assigned_team: Optional[str] = "Rapid Response Rescue Unit #3"
     veterinarian_name: Optional[str] = "Dr. K. Rao (Wildlife Vet)"
 
+class VisionDetectRequest(BaseModel):
+    image: str
+    device_id: Optional[str] = "WILDLINK-WEBCAM-DEMO-01"
+    location_name: Optional[str] = "Bannerghatta Forest Road (Demo Post)"
+    latitude: Optional[float] = 12.7980
+    longitude: Optional[float] = 77.5750
+    auto_create_incident: Optional[bool] = True
+
 class FarmRegistration(BaseModel):
     owner_id: str
     owner_name: str

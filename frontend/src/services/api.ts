@@ -100,6 +100,21 @@ export const api = {
   getAuditLogs: () => fetchJson<AuditLog[]>('/audit-logs'),
   getSettings: () => fetchJson<Record<string, any>>('/settings'),
 
+  // Vision & Live Webcam Object Detection
+  detectWebcamFrame: (data: {
+    image: string;
+    device_id?: string;
+    location_name?: string;
+    latitude?: number;
+    longitude?: number;
+    auto_create_incident?: boolean;
+  }) => fetchJson<any>('/vision/detect', { method: 'POST', body: JSON.stringify(data) }),
+
+  updateDetectionStatus: (detectionId: string, status: string, officerName = 'Officer M. Deshmukh', notes = '') =>
+    fetchJson<any>(`/detections/${detectionId}/status?status=${status}&officer_name=${encodeURIComponent(officerName)}&notes=${encodeURIComponent(notes)}`, {
+      method: 'PUT'
+    }),
+
   // Demo controls
   triggerDemoScenario: (scenario: 'elephant_highway' | 'wild_boar_farm' | 'predator_perimeter') =>
     fetchJson(`/demo/simulate-trigger?scenario=${scenario}`, { method: 'POST' }),

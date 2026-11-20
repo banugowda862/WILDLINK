@@ -22,9 +22,11 @@ from models import (
     EnvironmentalThreatCreate,
     UserProfile,
     RoleEnum,
-    RiskLevelEnum
+    RiskLevelEnum,
+    VisionDetectRequest
 )
 from database import db, get_current_iso_time
+from detector import detector
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 logger = logging.getLogger("wildlink.api")
@@ -259,6 +261,106 @@ def get_detection(detection_id: str):
         if r["detection_id"] == detection_id:
             return r
     raise HTTPException(status_code=404, detail="Detection not found")
+
+@app.put("/api/v1/detections/{detection_id}/status")
+def update_detection_status(
+    detection_id: str,
+    status: str = Query(..., description="verified, needs_review, or false_detection"),
+    officer_name: str = Query("Officer M. Deshmukh"),
+    notes: Optional[str] = Query("")
+):
+    target = None
+    for r in db.data.get("detections", []):
+        if r["detection_id"] == detection_id:
+            target = r
+            break
+    if not target:
+        raise HTTPException(status_code=404, detail="Detection not found")
+
+    target["verification_status"] = status
+    target["verified_by"] = officer_name
+    target["verification_notes"] = notes or f"Marked as {status} by {officer_name}"
+    db.save()
+    log_audit(officer_name, "forest_officer", "DETECTION_STATUS_UPDATED", detection_id, f"Marked {detection_id} as {status}")
+    return {"status": "updated", "detection": target}
+
+@app.post("/api/v1/vision/detect")
+def detect_webcam_frame(payload: VisionDetectRequest):
+    result = detector.detect(payload.image, payload.device_id or "WILDLINK-WEBCAM-DEMO-01")
+    if not result.get("success"):
+        return result
+
+    if result.get("animal_detected"):
+        now_iso = get_current_iso_time()
+        detection_id = f"DET-CAM-{datetime.now().strftime('%Y%m%d')}-{uuid.uuid4().hex[:6].upper()}"
+
+        # Format detection record for database
+        det_record = {
+            "detection_id": detection_id,
+            "device_id": payload.device_id or "WILDLINK-WEBCAM-DEMO-01",
+            "timestamp": now_iso,
+            "event_type": "webcam_vision_detection",
+            "detection_method": "optical_yolo",
+            "possible_species": result["species"],
+            "detection_confidence": result["confidence"],
+            "candidate_count": len(result.get("bounding_boxes", [])),
+            "risk_level": result.get("risk_level", "medium"),
+            "latitude": payload.latitude or 12.7980,
+            "longitude": payload.longitude or 77.5750,
+            "verification_status": "pending",
+            "verified_by": None,
+            "verification_notes": f"Captured from live camera at {payload.location_name}",
+            "assigned_to": None,
+            "simulated": False,
+            "bounding_boxes": [
+                {
+                    "x": int(b["norm_x"] * 32),
+                    "y": int(b["norm_y"] * 24),
+                    "w": int(b["norm_w"] * 32),
+                    "h": int(b["norm_h"] * 24),
+                    "label": f"{result['species']} ({int(result['confidence']*100)}%)"
+                }
+                for b in result.get("bounding_boxes", [])
+            ]
+        }
+
+        # Save to detections if not duplicate
+        if not result.get("suppressed_duplicate"):
+            db.data["detections"].insert(0, det_record)
+
+            # Auto-create pending verification incident for Forest Officers
+            if payload.auto_create_incident:
+                incident_id = f"INC-CAM-{uuid.uuid4().hex[:6].upper()}"
+                incident_record = {
+                    "report_id": incident_id,
+                    "category": "wildlife_road_crossing" if "road" in (payload.location_name or "").lower() else "animal_sighting",
+                    "title": f"Live Camera Detection: {result['species']} at {payload.location_name}",
+                    "description": f"Real-time object detection identified {result['species']} with {int(result['confidence'] * 100)}% model confidence on live camera {payload.device_id}.",
+                    "location_name": payload.location_name or "Bannerghatta Forest Road (Demo Post)",
+                    "latitude": payload.latitude or 12.7980,
+                    "longitude": payload.longitude or 77.5750,
+                    "date_time": now_iso,
+                    "species": result["species"],
+                    "severity": result.get("risk_level", "medium"),
+                    "status": "pending_verification",
+                    "assigned_team": None,
+                    "reporter_name": f"Optical Camera ({payload.device_id})",
+                    "reporter_contact": "Automated Vision Sentinel",
+                    "reporter_role": "sensor_ai",
+                    "is_public": False,
+                    "privacy_consent": True,
+                    "simulated": False
+                }
+                db.data["reports"].insert(0, incident_record)
+                det_record["associated_incident_id"] = incident_id
+
+            db.save()
+            log_audit("system", "camera_vision", "ANIMAL_DETECTED", detection_id, f"Detected {result['species']} on {payload.device_id}")
+
+        result["detection_id"] = detection_id
+        result["location_name"] = payload.location_name
+
+    return result
 
 # --- Reports & Incidents Endpoints ---
 

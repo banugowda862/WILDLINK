@@ -16,7 +16,11 @@ import {
   Layers,
   User,
   LogOut,
-  ChevronDown
+  ChevronDown,
+  Camera,
+  Navigation,
+  Home as HomeIcon,
+  Sparkles
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -60,6 +64,22 @@ export const Navbar: React.FC = () => {
               Home
             </Link>
 
+            {/* Live Camera AI Page */}
+            <Link
+              to="/live-camera"
+              className={`px-3 py-2 rounded-lg flex items-center space-x-1.5 transition ${
+                isActive('/live-camera')
+                  ? 'bg-rose-900/90 text-rose-100 ring-1 ring-rose-500'
+                  : 'text-slate-200 hover:text-white hover:bg-emerald-900/50'
+              }`}
+            >
+              <Camera className="w-4 h-4 text-rose-400" />
+              <span>Live Camera</span>
+              <span className="bg-rose-600 text-[10px] font-black uppercase px-1.5 py-0.5 rounded text-white animate-pulse">
+                YOLO
+              </span>
+            </Link>
+
             <Link
               to="/map"
               className={`px-3 py-2 rounded-lg flex items-center space-x-1 transition ${
@@ -82,7 +102,34 @@ export const Navbar: React.FC = () => {
               </button>
 
               {modulesDropdownOpen && (
-                <div className="absolute left-0 mt-2 w-64 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl py-2 z-50 text-xs">
+                <div className="absolute left-0 mt-2 w-72 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl py-2 z-50 text-xs">
+                  <Link
+                    to="/journey-safety"
+                    className="flex items-center space-x-2 px-4 py-2 hover:bg-emerald-950 text-slate-200 hover:text-indigo-300"
+                  >
+                    <Navigation className="w-4 h-4 text-indigo-400" />
+                    <div>
+                      <div className="font-semibold flex items-center space-x-1">
+                        <span>Traveller Journey Safety</span>
+                        <span className="bg-indigo-600 text-[9px] px-1 rounded text-white font-bold">GPS</span>
+                      </div>
+                      <div className="text-[10px] text-slate-400">Highway corridor driver warnings</div>
+                    </div>
+                  </Link>
+
+                  <Link
+                    to="/village-safety"
+                    className="flex items-center space-x-2 px-4 py-2 hover:bg-emerald-950 text-slate-200 hover:text-emerald-300"
+                  >
+                    <HomeIcon className="w-4 h-4 text-emerald-400" />
+                    <div>
+                      <div className="font-semibold">Village Safety Board</div>
+                      <div className="text-[10px] text-slate-400">Rural buffer resident precautions</div>
+                    </div>
+                  </Link>
+
+                  <div className="border-t border-slate-800 my-1"></div>
+
                   <Link
                     to="/crop-protection"
                     className="flex items-center space-x-2 px-4 py-2 hover:bg-emerald-950 text-slate-200 hover:text-emerald-300"
@@ -264,10 +311,11 @@ export const Navbar: React.FC = () => {
           {/* Mobile menu button */}
           <div className="lg:hidden flex items-center space-x-2">
             <Link
-              to="/report"
-              className="bg-emerald-600 text-white text-xs px-2.5 py-1.5 rounded-lg font-semibold"
+              to="/live-camera"
+              className="bg-rose-600 text-white text-xs px-2.5 py-1.5 rounded-lg font-bold flex items-center space-x-1"
             >
-              Report
+              <Camera className="w-3 h-3" />
+              <span>Live AI</span>
             </Link>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -283,67 +331,56 @@ export const Navbar: React.FC = () => {
       {mobileMenuOpen && (
         <div className="lg:hidden bg-slate-950 border-t border-slate-800 px-4 pt-3 pb-6 space-y-3 text-sm">
           <Link
-            to="/"
+            to="/live-camera"
             onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 text-slate-200 hover:text-emerald-300 font-medium"
+            className="flex items-center space-x-2 py-2 text-rose-300 font-bold bg-rose-950/60 px-3 rounded-lg"
           >
-            Home
+            <Camera className="w-4 h-4 text-rose-400" />
+            <span>Live Laptop Webcam (YOLO Vision)</span>
+          </Link>
+          <Link
+            to="/journey-safety"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center space-x-2 py-2 text-indigo-300 font-medium px-3"
+          >
+            <Navigation className="w-4 h-4 text-indigo-400" />
+            <span>Traveller Journey Safety (GPS)</span>
+          </Link>
+          <Link
+            to="/village-safety"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center space-x-2 py-2 text-emerald-300 font-medium px-3"
+          >
+            <HomeIcon className="w-4 h-4 text-emerald-400" />
+            <span>Village Safety Advisory Board</span>
           </Link>
           <Link
             to="/map"
             onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 text-slate-200 hover:text-emerald-300 font-medium"
+            className="block py-2 text-slate-200 hover:text-emerald-300 font-medium px-3"
           >
             Wildlife Safety Map
           </Link>
           <Link
             to="/crop-protection"
             onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 text-slate-200 hover:text-emerald-300 font-medium"
+            className="block py-2 text-slate-200 hover:text-emerald-300 font-medium px-3"
           >
             Crop Protection
           </Link>
           <Link
             to="/road-alerts"
             onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 text-slate-200 hover:text-emerald-300 font-medium"
+            className="block py-2 text-slate-200 hover:text-emerald-300 font-medium px-3"
           >
             Road & Railway Alerts
           </Link>
           <Link
             to="/rescue"
             onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 text-slate-200 hover:text-emerald-300 font-medium"
+            className="block py-2 text-slate-200 hover:text-emerald-300 font-medium px-3"
           >
             Wildlife Rescue
-          </Link>
-          <Link
-            to="/sightings"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 text-slate-200 hover:text-emerald-300 font-medium"
-          >
-            City & Village Sightings
-          </Link>
-          <Link
-            to="/environmental-threats"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 text-slate-200 hover:text-emerald-300 font-medium"
-          >
-            Environmental Threats
-          </Link>
-          <Link
-            to="/how-it-works"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 text-slate-300 hover:text-white"
-          >
-            How It Works
-          </Link>
-          <Link
-            to="/about"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 text-slate-300 hover:text-white"
-          >
-            About WILDLINK
           </Link>
 
           {isOfficer && (
@@ -352,28 +389,16 @@ export const Navbar: React.FC = () => {
               <Link
                 to="/officer"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block py-1.5 text-emerald-300 font-medium"
+                className="block py-1.5 text-emerald-300 font-medium px-3"
               >
                 Officer Hub Dashboard
               </Link>
               <Link
                 to="/officer/monitoring"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block py-1.5 text-emerald-300 font-medium"
+                className="block py-1.5 text-emerald-300 font-medium px-3"
               >
                 Thermal Camera Monitoring
-              </Link>
-            </div>
-          )}
-
-          {isAdmin && (
-            <div className="pt-2 border-t border-slate-800">
-              <Link
-                to="/admin"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block py-1.5 text-purple-300 font-medium"
-              >
-                Admin Dashboard & Logs
               </Link>
             </div>
           )}

@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { useAlerts } from '../context/AlertContext';
 import { useAuth } from '../context/AuthContext';
 import type { UserRole } from '../types';
-import { AlertTriangle, Play, RefreshCw, Shield, UserCheck, X } from 'lucide-react';
+import { AlertTriangle, Play, RefreshCw, Shield, UserCheck, X, Camera, Navigation, Home } from 'lucide-react';
 import { api } from '../services/api';
+import { Link, useLocation } from 'react-router-dom';
 
 export const DemoControlBar: React.FC = () => {
   const { triggerDemo, notificationToast, dismissToast } = useAlerts();
   const { role, setRole } = useAuth();
+  const location = useLocation();
   const [resetting, setResetting] = useState(false);
 
   const handleReset = async () => {
@@ -25,7 +27,7 @@ export const DemoControlBar: React.FC = () => {
   };
 
   return (
-    <div className="bg-amber-900/90 text-amber-100 text-xs border-b border-amber-700/50 backdrop-blur-sm sticky top-0 z-50">
+    <div className="bg-amber-950/95 text-amber-100 text-xs border-b border-amber-800/60 backdrop-blur-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-1.5 flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center space-x-2">
           <span className="flex h-2 w-2 relative">
@@ -33,56 +35,68 @@ export const DemoControlBar: React.FC = () => {
             <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
           </span>
           <span className="font-semibold tracking-wide uppercase text-[10px] bg-amber-800 text-amber-200 px-1.5 py-0.5 rounded">
-            Demo Mode Active
+            College Presentation Mode
           </span>
-          <span className="hidden sm:inline text-amber-200/80">
-            Fictional corridors & simulated sensor events. No real emergency dispatches.
-          </span>
+
+          {/* Quick Demo Mode Links */}
+          <div className="flex items-center space-x-1 border-l border-amber-800/80 pl-2">
+            <Link
+              to="/live-camera"
+              className={`px-2 py-0.5 rounded flex items-center space-x-1 font-bold transition text-[11px] ${
+                location.pathname === '/live-camera'
+                  ? 'bg-rose-600 text-white'
+                  : 'bg-rose-900/60 hover:bg-rose-800 text-rose-200'
+              }`}
+              title="Open laptop webcam YOLO animal detector"
+            >
+              <Camera className="w-3 h-3 text-rose-300" />
+              <span>Live Webcam</span>
+            </Link>
+
+            <Link
+              to="/journey-safety"
+              className={`px-2 py-0.5 rounded flex items-center space-x-1 font-medium transition text-[11px] ${
+                location.pathname === '/journey-safety'
+                  ? 'bg-indigo-600 text-white'
+                  : 'bg-indigo-950/60 hover:bg-indigo-900 text-indigo-200'
+              }`}
+              title="Open traveller route safety dashboard"
+            >
+              <Navigation className="w-3 h-3 text-indigo-300" />
+              <span>Journey Safety</span>
+            </Link>
+
+            <Link
+              to="/village-safety"
+              className={`px-2 py-0.5 rounded flex items-center space-x-1 font-medium transition text-[11px] ${
+                location.pathname === '/village-safety'
+                  ? 'bg-emerald-600 text-white'
+                  : 'bg-emerald-950/60 hover:bg-emerald-900 text-emerald-200'
+              }`}
+              title="Open rural village advisory board"
+            >
+              <Home className="w-3 h-3 text-emerald-300" />
+              <span>Village Safety</span>
+            </Link>
+          </div>
         </div>
 
-        {/* Quick Simulator Buttons */}
+        {/* Quick Simulator Buttons & Role Switcher */}
         <div className="flex items-center space-x-2">
-          <span className="text-[11px] text-amber-300 font-medium hidden md:inline">Simulate Sensor:</span>
-          <button
-            onClick={() => triggerDemo('elephant_highway')}
-            className="bg-emerald-800 hover:bg-emerald-700 text-emerald-100 px-2 py-1 rounded flex items-center space-x-1 font-medium transition"
-            title="Simulate thermal elephant detection on Bandipur NH-766"
-          >
-            <Play className="w-3 h-3 text-emerald-300" />
-            <span>Elephant NH-766</span>
-          </button>
-          <button
-            onClick={() => triggerDemo('wild_boar_farm')}
-            className="bg-amber-800 hover:bg-amber-700 text-amber-100 px-2 py-1 rounded flex items-center space-x-1 font-medium transition"
-            title="Simulate wild boar crop threat detection"
-          >
-            <Play className="w-3 h-3 text-amber-300" />
-            <span>Boar Farm</span>
-          </button>
-          <button
-            onClick={() => triggerDemo('predator_perimeter')}
-            className="bg-rose-900 hover:bg-rose-800 text-rose-100 px-2 py-1 rounded flex items-center space-x-1 font-medium transition"
-            title="Simulate predator perimeter detection"
-          >
-            <Play className="w-3 h-3 text-rose-300" />
-            <span>Predator</span>
-          </button>
-
           {/* Quick Role Switcher for instant evaluator testing */}
-          <div className="flex items-center space-x-1 bg-black/30 rounded px-1.5 py-0.5 ml-2">
+          <div className="flex items-center space-x-1 bg-black/40 rounded px-2 py-0.5 border border-amber-800/50">
             <UserCheck className="w-3 h-3 text-emerald-400" />
-            <span className="text-[10px] text-slate-300">View as:</span>
+            <span className="text-[10px] text-amber-200/80">Active Role:</span>
             <select
               value={role}
               onChange={(e) => setRole(e.target.value as UserRole)}
-              className="bg-transparent text-amber-100 text-[11px] font-semibold focus:outline-none cursor-pointer"
+              className="bg-transparent text-amber-100 text-[11px] font-bold focus:outline-none cursor-pointer"
             >
-              <option value="public" className="bg-slate-900 text-white">Public Visitor</option>
-              <option value="farmer" className="bg-slate-900 text-white">Farmer</option>
-              <option value="resident" className="bg-slate-900 text-white">Resident</option>
-              <option value="driver" className="bg-slate-900 text-white">Driver</option>
-              <option value="volunteer" className="bg-slate-900 text-white">Volunteer</option>
               <option value="forest_officer" className="bg-slate-900 text-white">Forest Officer (Auth)</option>
+              <option value="driver" className="bg-slate-900 text-white">Driver / Traveller</option>
+              <option value="resident" className="bg-slate-900 text-white">Village Resident</option>
+              <option value="farmer" className="bg-slate-900 text-white">Farmer</option>
+              <option value="public" className="bg-slate-900 text-white">Public Visitor</option>
               <option value="admin" className="bg-slate-900 text-white">Administrator</option>
             </select>
           </div>
@@ -90,11 +104,11 @@ export const DemoControlBar: React.FC = () => {
           <button
             onClick={handleReset}
             disabled={resetting}
-            className="bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded flex items-center space-x-1 transition"
-            title="Reset database to seed"
+            className="bg-slate-900 hover:bg-slate-800 text-slate-300 px-2 py-1 rounded flex items-center space-x-1 transition text-[11px] border border-slate-700"
+            title="Reset database to default seed state"
           >
             <RefreshCw className={`w-3 h-3 ${resetting ? 'animate-spin' : ''}`} />
-            <span className="hidden sm:inline">Reset</span>
+            <span>Reset</span>
           </button>
         </div>
       </div>
