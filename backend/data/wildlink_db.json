@@ -83,6 +83,62 @@
   ],
   "detections": [
     {
+      "detection_id": "DET-CAM-20261120-9F2C0B",
+      "device_id": "WILDLINK-WEBCAM-DEMO-01",
+      "timestamp": "2026-11-20T17:44:51.706436+00:00",
+      "event_type": "webcam_vision_detection",
+      "detection_method": "optical_yolo",
+      "possible_species": "Asian Elephant",
+      "detection_confidence": 0.77,
+      "candidate_count": 1,
+      "risk_level": "high",
+      "latitude": 12.798,
+      "longitude": 77.575,
+      "verification_status": "pending",
+      "verified_by": null,
+      "verification_notes": "Captured from live camera at Bannerghatta Forest Road (Demo Post)",
+      "assigned_to": null,
+      "simulated": false,
+      "bounding_boxes": [
+        {
+          "x": 0,
+          "y": 10,
+          "w": 8,
+          "h": 9,
+          "label": "Asian Elephant (77%)"
+        }
+      ],
+      "associated_incident_id": "INC-CAM-3C72B5"
+    },
+    {
+      "detection_id": "DET-CAM-20261120-50C93F",
+      "device_id": "WILDLINK-WEBCAM-DEMO-01",
+      "timestamp": "2026-11-20T17:44:42.380581+00:00",
+      "event_type": "webcam_vision_detection",
+      "detection_method": "optical_yolo",
+      "possible_species": "Wildcat / Feline Candidate",
+      "detection_confidence": 0.44,
+      "candidate_count": 1,
+      "risk_level": "medium",
+      "latitude": 12.798,
+      "longitude": 77.575,
+      "verification_status": "pending",
+      "verified_by": null,
+      "verification_notes": "Captured from live camera at Bannerghatta Forest Road (Demo Post)",
+      "assigned_to": null,
+      "simulated": false,
+      "bounding_boxes": [
+        {
+          "x": 3,
+          "y": 9,
+          "w": 28,
+          "h": 14,
+          "label": "Wildcat / Feline Candidate (44%)"
+        }
+      ],
+      "associated_incident_id": "INC-CAM-591556"
+    },
+    {
       "detection_id": "DET-DEMO-45A03E",
       "device_id": "WILDLINK-ROAD-001",
       "timestamp": "2026-11-20T16:41:17.737176+00:00",
@@ -258,6 +314,46 @@
     }
   ],
   "reports": [
+    {
+      "report_id": "INC-CAM-3C72B5",
+      "category": "wildlife_road_crossing",
+      "title": "Live Camera Detection: Asian Elephant at Bannerghatta Forest Road (Demo Post)",
+      "description": "Real-time object detection identified Asian Elephant with 77% model confidence on live camera WILDLINK-WEBCAM-DEMO-01.",
+      "location_name": "Bannerghatta Forest Road (Demo Post)",
+      "latitude": 12.798,
+      "longitude": 77.575,
+      "date_time": "2026-11-20T17:44:51.706436+00:00",
+      "species": "Asian Elephant",
+      "severity": "high",
+      "status": "pending_verification",
+      "assigned_team": null,
+      "reporter_name": "Optical Camera (WILDLINK-WEBCAM-DEMO-01)",
+      "reporter_contact": "Automated Vision Sentinel",
+      "reporter_role": "sensor_ai",
+      "is_public": false,
+      "privacy_consent": true,
+      "simulated": false
+    },
+    {
+      "report_id": "INC-CAM-591556",
+      "category": "wildlife_road_crossing",
+      "title": "Live Camera Detection: Wildcat / Feline Candidate at Bannerghatta Forest Road (Demo Post)",
+      "description": "Real-time object detection identified Wildcat / Feline Candidate with 44% model confidence on live camera WILDLINK-WEBCAM-DEMO-01.",
+      "location_name": "Bannerghatta Forest Road (Demo Post)",
+      "latitude": 12.798,
+      "longitude": 77.575,
+      "date_time": "2026-11-20T17:44:42.380581+00:00",
+      "species": "Wildcat / Feline Candidate",
+      "severity": "medium",
+      "status": "pending_verification",
+      "assigned_team": null,
+      "reporter_name": "Optical Camera (WILDLINK-WEBCAM-DEMO-01)",
+      "reporter_contact": "Automated Vision Sentinel",
+      "reporter_role": "sensor_ai",
+      "is_public": false,
+      "privacy_consent": true,
+      "simulated": false
+    },
     {
       "report_id": "REP-2026-EE7034",
       "category": "wildlife_road_crossing",
@@ -650,6 +746,26 @@
     }
   ],
   "audit_logs": [
+    {
+      "log_id": "LOG-07D93050",
+      "timestamp": "2026-11-20T17:44:51.713200+00:00",
+      "actor_email": "system",
+      "actor_role": "camera_vision",
+      "action": "ANIMAL_DETECTED",
+      "target": "DET-CAM-20261120-9F2C0B",
+      "details": "Detected Asian Elephant on WILDLINK-WEBCAM-DEMO-01",
+      "ip_address": "127.0.0.1"
+    },
+    {
+      "log_id": "LOG-E839E93D",
+      "timestamp": "2026-11-20T17:44:42.385284+00:00",
+      "actor_email": "system",
+      "actor_role": "camera_vision",
+      "action": "ANIMAL_DETECTED",
+      "target": "DET-CAM-20261120-50C93F",
+      "details": "Detected Wildcat / Feline Candidate on WILDLINK-WEBCAM-DEMO-01",
+      "ip_address": "127.0.0.1"
+    },
     {
       "log_id": "LOG-88F7F00B",
       "timestamp": "2026-11-20T16:41:17.740877+00:00",
