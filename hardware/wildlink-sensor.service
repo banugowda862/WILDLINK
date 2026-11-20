@@ -1,0 +1,21 @@
+[Unit]
+Description=WILDLINK Wildlife Early Detection Thermal Edge Service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/wildlife/hardware
+ExecStart=/home/pi/wildlife/hardware/venv/bin/python main.py --config config.example.yaml
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+# Security Sandboxing for Edge Device
+ProtectSystem=full
+ProtectHome=read-only
+
+[Install]
+WantedBy=multi-user.target

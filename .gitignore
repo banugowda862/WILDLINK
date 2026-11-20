@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+venv/
+.venv/
+env/
+
+# Build artifacts
+frontend/dist/
+dist/
+build/
+*.egg-info/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Environment and sensitive keys
+.env
+.env.local
+serviceAccountKey.json
+*.pem
+*.key
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Temp files
+*.log
+master_prompt.txt

@@ -1,0 +1,8 @@
+# WILDLINK Raspberry Pi Hardware Node Dependencies
+requests>=2.31.0
+pyyaml>=6.0.1
+numpy>=1.24.0
+opencv-python-headless>=4.8.0
+# Hardware-specific (Raspberry Pi only):
+# adafruit-circuitpython-mlx90640>=1.4.0
+# RPi.GPIO>=0.7.1

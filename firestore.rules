@@ -1,0 +1,78 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function getUserRole() {
+      return request.auth.token.role;
+    }
+    
+    function isOfficer() {
+      return isAuthenticated() && (getUserRole() == 'forest_officer' || getUserRole() == 'admin');
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && getUserRole() == 'admin';
+    }
+
+    // 1. Devices Collection:
+    // Only officers & admins can view device telemetry; only backend service account or device token can write.
+    match /devices/{deviceId} {
+      allow read: if isOfficer();
+      allow write: if isAdmin();
+    }
+
+    // 2. Detections Collection:
+    // Raw detections are visible to officers; public users do not have direct access to raw heat coordinates.
+    match /detections/{detectionId} {
+      allow read: if isOfficer();
+      allow write: if isOfficer();
+    }
+
+    // 3. Reports Collection:
+    // Any authenticated user can submit; users can read their own reports; officers can read all.
+    match /reports/{reportId} {
+      allow create: if true; // allow citizen submission
+      allow read: if isOfficer() || (isAuthenticated() && resource.data.reporter_id == request.auth.uid) || resource.data.is_public == true;
+      allow update, delete: if isOfficer();
+    }
+
+    // 4. Alerts Collection:
+    // Active alerts are publicly readable; only officers and admins can publish or resolve alerts.
+    match /alerts/{alertId} {
+      allow read: if resource.data.is_active == true || isOfficer();
+      allow write: if isOfficer();
+    }
+
+    // 5. Rescue Cases:
+    // Sensitive rescue locations and veterinary details restricted to response teams & officers.
+    match /rescueCases/{rescueId} {
+      allow read, write: if isOfficer() || (isAuthenticated() && getUserRole() == 'vet_rescue');
+    }
+
+    // 6. Farms Collection:
+    // Farmers manage their own plots; officers can view buffer farms for conflict mitigation.
+    match /farms/{farmId} {
+      allow read: if isOfficer() || (isAuthenticated() && resource.data.owner_id == request.auth.uid);
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && resource.data.owner_id == request.auth.uid;
+    }
+
+    // 7. Audit Logs:
+    // Strictly immutable; only admins can inspect.
+    match /auditLogs/{logId} {
+      allow read: if isAdmin();
+      allow write: if false; // Only backend admin SDK can append
+    }
+
+    // 8. System Settings:
+    match /systemSettings/{settingId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+  }
+}
